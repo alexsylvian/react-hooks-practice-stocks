@@ -10,6 +10,8 @@ function MainContainer() {
 
   const [sortBy, setSortBy] = useState("Alphabetically");
 
+  const [filterBy, setFilterBy] = useState("Tech")
+
   useEffect(() => {
     fetch("http://localhost:3001/stocks")
       .then((response) => response.json())
@@ -28,14 +30,18 @@ function MainContainer() {
   };
 
   function handleSortChange(e) {
-    console.log(e)
-    console.log('test1')
-    console.log('Selected value:', e);
-    console.log('Current sortBy state:', sortBy);
     const value = e;
     setSortBy(value);
-    console.log('test2')
   }
+
+  function handleFilterChange(e) {
+    console.log(e)
+    const value = e
+    setFilterBy(value)
+  }
+
+  const filteredStocks = stocks.filter((stock) => stock.type === filterBy);
+
   
   useEffect(() => {
     fetch("http://localhost:3001/stocks")
@@ -53,13 +59,12 @@ function MainContainer() {
       });
   }, [sortBy]);
 
-
   return (
     <div>
-      <SearchBar onSortChange={handleSortChange} sortBy={sortBy} />
+      <SearchBar onSortChange={handleSortChange} sortBy={sortBy} onFilterChange={handleFilterChange} filterBy={filterBy} />
       <div className="row">
         <div className="col-8">
-          <StockContainer stocks={stocks} onBuyStock={handleBuyStock} />
+          <StockContainer stocks={filteredStocks} onBuyStock={handleBuyStock} />
         </div>
         <div className="col-4">
           <PortfolioContainer myPortfolio={myPortfolio} onSellStock={handleSellStock} />
